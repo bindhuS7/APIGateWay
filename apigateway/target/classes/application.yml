@@ -1,0 +1,43 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: payment-service
+          uri: lb://paymentservice
+          predicates:
+            - Path=/payment/**
+
+        - id: order-service
+          uri: lb://orderservice
+          predicates:
+            - Path=/order/**
+
+        - id: inventory-service
+          uri: lb://inventoryservice
+          predicates:
+            - Path=/inventory/**
+
+        - id: saga-service
+          uri: lb://sagaservice
+          predicates:
+            - Path=/saga/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty: DEBUG
